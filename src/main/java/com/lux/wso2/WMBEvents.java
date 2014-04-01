@@ -29,16 +29,9 @@ public class WMBEvents {
             NoStreamDefinitionExistException,
             AuthenticationException,
             TransportException, SocketException {
-        LOG.info("Starting BAM Statistics Agent");
-        AgentConfiguration agentConfiguration = new AgentConfiguration();
-        String currentDir = System.getProperty("user.dir");
 
-        // this is the bug CEP-656
-        agentConfiguration.setTrustStore("wso2carbon");
-        agentConfiguration.setTrustStorePassword(currentDir + "/src/main/resources/client-truststore.jks");
 
-        Agent agent = new Agent(agentConfiguration);
-        LOG.info("Agent created");
+        Agent agent = AgentHolder.INSTANCE.get();
         String host = "s540";
 
         String url = getProperty("url", "tcp://" + host + ":" + "7611");
