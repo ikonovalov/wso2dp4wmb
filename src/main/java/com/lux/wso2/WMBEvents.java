@@ -1,5 +1,6 @@
 package com.lux.wso2;
 
+import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.conf.AgentConfiguration;
@@ -14,7 +15,11 @@ import java.net.SocketException;
  * Hello world!
  */
 public class WMBEvents {
+
+    private static final Logger LOG = Logger.getLogger(WMBEvents.class);
+
     public static final String STREAM_NAME = "bam_wmb_events";
+
     public static final String STREAM_VERSION = "1.0.0";
 
     public static void main(String[] args)
@@ -24,7 +29,7 @@ public class WMBEvents {
             NoStreamDefinitionExistException,
             AuthenticationException,
             TransportException, SocketException {
-        System.out.println("Starting BAM Statistics Agent");
+        LOG.info("Starting BAM Statistics Agent");
         AgentConfiguration agentConfiguration = new AgentConfiguration();
         String currentDir = System.getProperty("user.dir");
 
@@ -33,7 +38,7 @@ public class WMBEvents {
         agentConfiguration.setTrustStorePassword(currentDir + "/src/main/resources/client-truststore.jks");
 
         Agent agent = new Agent(agentConfiguration);
-        System.out.println("Agent created");
+        LOG.info("Agent created");
         String host = "s540";
 
         String url = getProperty("url", "tcp://" + host + ":" + "7611");
@@ -42,14 +47,14 @@ public class WMBEvents {
 
         //create data publisher
         long dpBuildTime = System.currentTimeMillis();
-        System.out.println("Creating DataPublisher...");
+        LOG.info("Creating DataPublisher...");
         DataPublisher dataPublisher = new DataPublisher(url, username, password, agent);
-        System.out.println("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
+        LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
         long findStreamTime = System.currentTimeMillis();
-        System.out.println("Finding stream...");
+        LOG.info("Finding stream...");
         String streamId = dataPublisher.findStreamId(STREAM_NAME, STREAM_VERSION);;
         if (streamId == null) {
-            System.out.println("Can't find stream. Define new stream '" + STREAM_NAME + ":" + STREAM_VERSION + "'");
+            LOG.info("Can't find stream. Define new stream '" + STREAM_NAME + ":" + STREAM_VERSION + "'");
             streamId = dataPublisher.defineStream("{" +
                     "  'name':'" + STREAM_NAME + "'," +
                     "  'version':'" + STREAM_VERSION + "'," +
@@ -83,7 +88,7 @@ public class WMBEvents {
                     "  ]" +
                     "}");
         } else {
-            System.out.println("Stream " + streamId + " already exists");
+            LOG.info("Stream " + streamId + " already exists");
         }
 
         //Publish event for a valid stream
@@ -92,7 +97,7 @@ public class WMBEvents {
             for (int i = 0; i < 10000; i++) {
                 publishEvents(dataPublisher, streamId);
                 if (i % 1000 == 0) {
-                    System.out.println("Write " + (i) + " events in " + (System.currentTimeMillis() - stime) + "ms");
+                    LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - stime) + "ms");
                     stime = System.currentTimeMillis();
                 }
             }
