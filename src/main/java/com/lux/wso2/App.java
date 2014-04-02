@@ -17,7 +17,7 @@ import java.util.*;
 public class App 
 {
     public static final String STREAM_NAME1 = "bam_service_data_publisher";
-    public static final String VERSION1 = "1.1.0";
+    public static final String VERSION1 = "1.2.0";
 
     public static String[] hosts = {"twodoubletriple.com", "esb.foo.org", "dss.foo.org", "as.it.foo.org", "as.mkt.foo.com",
             "as.foo.org"};

@@ -3,7 +3,6 @@ package com.lux.wso2;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
-import org.wso2.carbon.databridge.agent.thrift.conf.AgentConfiguration;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.carbon.databridge.commons.exception.*;
@@ -14,13 +13,11 @@ import java.net.SocketException;
 /**
  * Hello world!
  */
-public class WMBEvents {
+public class WMBEventsAdapter {
 
-    private static final Logger LOG = Logger.getLogger(WMBEvents.class);
+    private static final Logger LOG = Logger.getLogger(WMBEventsAdapter.class);
 
-    public static final String STREAM_NAME = "bam_wmb_events";
 
-    public static final String STREAM_VERSION = "1.0.0";
 
     public static void main(String[] args)
             throws AgentException, MalformedStreamDefinitionException,
@@ -34,7 +31,7 @@ public class WMBEvents {
         Agent agent = AgentHolder.INSTANCE.get();
         String host = "s540";
 
-        String url = getProperty("url", "tcp://" + host + ":" + "7611");
+        String url = getProperty("url", "ssl://" + host + ":" + "7711");
         String username = getProperty("username", "admin");
         String password = getProperty("password", "admin");
 
@@ -45,41 +42,11 @@ public class WMBEvents {
         LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
         long findStreamTime = System.currentTimeMillis();
         LOG.info("Finding stream...");
-        String streamId = dataPublisher.findStreamId(STREAM_NAME, STREAM_VERSION);;
+        StreamDefinitionBuilder streamDefinitionBuilder = new StreamDefinitionBuilder();
+        String streamId = dataPublisher.findStreamId(streamDefinitionBuilder.getStreamName(), streamDefinitionBuilder.getStreamVerision());
         if (streamId == null) {
-            LOG.info("Can't find stream. Define new stream '" + STREAM_NAME + ":" + STREAM_VERSION + "'");
-            streamId = dataPublisher.defineStream("{" +
-                    "  'name':'" + STREAM_NAME + "'," +
-                    "  'version':'" + STREAM_VERSION + "'," +
-                    "  'nickName': 'WMBEvents'," +
-                    "  'description': 'WebSphere Message Broker monitoring events'," +
-                    "  'metaData':[" +
-                    "          {'name':'productVersion','type':'STRING'}," + // eventData.attributes
-                    "          {'name':'eventSchemaVersion','type':'STRING'}," +
-                    "          {'name':'eventSourceAddress','type':'STRING'}," +
-                    "          {'name':'eventName','type':'STRING'}," +         //eventData.eventIdentity
-                    "          {'name':'severity','type':'STRING'}," +
-                    "          {'name':'priority','type':'STRING'}," +
-                    "          {'name':'successDisposition','type':'STRING'}," +
-                    "          {'name':'creationTime','type':'LONG'}," +        //eventData.eventSequence
-                    "          {'name':'counter','type':'INT'}," +
-                    "          {'name':'broker','type':'STRING'}," +              //messageFlowData.broker.name
-                    "          {'name':'executionGroup','type':'STRING'}," +      //messageFlowData.executionGroup.name
-                    "          {'name':'messageFlow','type':'STRING'}," +         //messageFlowData.messageFlow.name
-                    "          {'name':'nodeLabel','type':'STRING'}," +           //messageFlowData.node
-                    "          {'name':'nodeType','type':'STRING'}," +
-                    "          {'name':'terminal','type':'STRING'}" +
-                    "  ]," +
-                    "  'payloadData':[" +
-                    "          {'name':'bitstream','type':'STRING'}," +
-                    "          {'name':'encodingType','type':'STRING'}" +
-                    "  ]," +
-                    "  'correlationData':[" +                                   //eventData.eventCorrelation
-                    "          {'name':'localTransactionId','type':'STRING'}," +
-                    "          {'name':'parentTransactionId', 'type':'STRING'}," +
-                    "          {'name':'globalTransactionId', 'type':'STRING'}" +
-                    "  ]" +
-                    "}");
+            LOG.info("Can't find stream. Define new stream '" + streamDefinitionBuilder.define() + "'");
+            streamId = dataPublisher.defineStream(streamDefinitionBuilder.define());
         } else {
             LOG.info("Stream " + streamId + " already exists");
         }
