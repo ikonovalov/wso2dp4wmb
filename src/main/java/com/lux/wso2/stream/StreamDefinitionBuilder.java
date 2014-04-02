@@ -1,22 +1,37 @@
-package com.lux.wso2;
+package com.lux.wso2.stream;
 
 /**
  * Created by Igor on 02.04.2014.
  */
 public class StreamDefinitionBuilder {
 
-    public final String streamName = "bam_wmb_events";
+    private final String streamName = "DefaultStreamName";
 
-    public String streamVersion = "1.0.0";
+    private final String streamVersion = "";
 
-    public String define() {
+    private final String nickName = "";
+
+    private final String description = "WebSphere Message Broker monitoring events";
+
+    public final String define() {
         return "{" +
                 "  'name':'" + getStreamName() + "'," +
                 "  'version':'" + getStreamVerision() + "'," +
-                "  'nickName': 'WMBEvents'," +
-                "  'description': 'WebSphere Message Broker monitoring events'," +
-                "  'metaData':[" +
-                "          {'name':'productVersion','type':'STRING'}," + // eventData.attributes
+                "  'nickName': '" + getNickName() + "'," +
+                "  'description': '" + getDescription() + "'," +
+                "  'metaData':          [" + defineMetaData() + "]," +
+                "  'payloadData':       [" + definePayloadData() + "]," +
+                "  'correlationData':   [" + defineCorrelationData() + "]" +
+                "}";
+
+    }
+
+    protected String getDescription() {
+        return description;
+    }
+
+    protected String defineMetaData() {
+        return  "          {'name':'productVersion','type':'STRING'}," + // eventData.attributes
                 "          {'name':'eventSchemaVersion','type':'STRING'}," +
                 "          {'name':'eventSourceAddress','type':'STRING'}," +
                 "          {'name':'eventName','type':'STRING'}," +         //eventData.eventIdentity
@@ -30,19 +45,18 @@ public class StreamDefinitionBuilder {
                 "          {'name':'messageFlow','type':'STRING'}," +         //messageFlowData.messageFlow.name
                 "          {'name':'nodeLabel','type':'STRING'}," +           //messageFlowData.node
                 "          {'name':'nodeType','type':'STRING'}," +
-                "          {'name':'terminal','type':'STRING'}" +
-                "  ]," +
-                "  'payloadData':[" +
-                "          {'name':'bitstream','type':'STRING'}," +
-                "          {'name':'encodingType','type':'STRING'}" +
-                "  ]," +
-                "  'correlationData':[" +                                   //eventData.eventCorrelation
-                "          {'name':'localTransactionId','type':'STRING'}," +
-                "          {'name':'parentTransactionId', 'type':'STRING'}," +
-                "          {'name':'globalTransactionId', 'type':'STRING'}" +
-                "  ]" +
-                "}";
+                "          {'name':'terminal','type':'STRING'}";
+    }
 
+    protected String definePayloadData() {
+        return  "          {'name':'bitstream','type':'STRING'}," +
+                "          {'name':'encodingType','type':'STRING'}";
+    }
+
+    protected String defineCorrelationData() {
+        return  "          {'name':'localTransactionId','type':'STRING'}," + //eventData.eventCorrelation
+                "          {'name':'parentTransactionId', 'type':'STRING'}," +
+                "          {'name':'globalTransactionId', 'type':'STRING'}";
     }
 
     public String getStreamName() {
@@ -53,8 +67,12 @@ public class StreamDefinitionBuilder {
         return streamVersion;
     }
 
-    public String getStreamQualifiedName() {
+    public final String getStreamQualifiedName() {
         return getStreamName() + ":" + getStreamVerision();
+    }
+
+    public String getNickName() {
+        return nickName;
     }
 
 }

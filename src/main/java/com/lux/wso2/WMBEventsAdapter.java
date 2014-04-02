@@ -1,5 +1,7 @@
 package com.lux.wso2;
 
+import com.lux.wso2.stream.StreamDefinitionBuilder;
+import com.lux.wso2.stream.WBMEventsStreamDefinitionBuilder;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -42,8 +44,9 @@ public class WMBEventsAdapter {
         LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
         long findStreamTime = System.currentTimeMillis();
         LOG.info("Finding stream...");
-        StreamDefinitionBuilder streamDefinitionBuilder = new StreamDefinitionBuilder();
+        StreamDefinitionBuilder streamDefinitionBuilder = new WBMEventsStreamDefinitionBuilder();
         String streamId = dataPublisher.findStreamId(streamDefinitionBuilder.getStreamName(), streamDefinitionBuilder.getStreamVerision());
+
         if (streamId == null) {
             LOG.info("Can't find stream. Define new stream '" + streamDefinitionBuilder.define() + "'");
             streamId = dataPublisher.defineStream(streamDefinitionBuilder.define());
