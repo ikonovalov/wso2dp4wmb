@@ -1,15 +1,16 @@
 package com.lux.wso2;
 
+import com.lux.wso2.exceptions.CommunicationException;
+import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.exceptions.WrongCredentialException;
 import com.lux.wso2.infrastructure.DataPublisherHolder;
 import org.junit.Test;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
-import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.exception.AuthenticationException;
-import org.wso2.carbon.databridge.commons.exception.TransportException;
 
 import java.net.MalformedURLException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 /**
  * Created by Igor on 07.04.2014.
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
 public class DataPublisherHolderTest extends EndpointSampleConnectionSettings {
 
     @Test // check with same endpoint
-    public void checkDataPublisherIsSame() throws MalformedURLException, AgentException, AuthenticationException, TransportException {
+    public void checkDataPublisherIsSame() throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException {
 
         Endpoint endpoint = new Endpoint(url, username, password);
         DataPublisher dataPublisher1 = DataPublisherHolder.INSTANCE.get(endpoint);
@@ -28,7 +29,7 @@ public class DataPublisherHolderTest extends EndpointSampleConnectionSettings {
     }
 
     @Test // check with same endpoint
-    public void checkDataPublisherIsSame2() throws MalformedURLException, AgentException, AuthenticationException, TransportException {
+    public void checkDataPublisherIsSame2() throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException {
 
         Endpoint endpoint1 = new Endpoint(url, username, password);
         DataPublisher dataPublisher1 = DataPublisherHolder.INSTANCE.get(endpoint1);
