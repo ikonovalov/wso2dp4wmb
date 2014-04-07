@@ -38,16 +38,12 @@ public class WMBEventsAdapter {
         String password = getProperty("password", "admin");
 
         //create data publisher
-        long dpBuildTime = System.currentTimeMillis();
-        LOG.info("Creating DataPublisher...");
-        DataPublisher dataPublisher = new DataPublisher(url, username, password, agent);
-        LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
 
-        long findStreamTimeStart = System.currentTimeMillis();
-        LOG.info("Finding stream...");
-        StreamDefinitionBuilder streamDefinitionBuilder = StreamDefinitionBuilderFactory.createFor("WMBEvent");
+        Endpoint endpoint = new Endpoint(url, username, password);
+        DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
 
-        Stream stream = Streams.defineIfNotExists(dataPublisher, streamDefinitionBuilder);
+
+        Stream stream = Streams.defineIfNotExists(dataPublisher, StreamDefinitionBuilderFactory.createFor("WMBEvent"));
 
         //Publish event for a valid stream
         if (stream.defined()) {

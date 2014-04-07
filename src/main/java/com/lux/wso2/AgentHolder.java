@@ -15,7 +15,7 @@ public enum AgentHolder {
 
     private AgentHolder() {
         final Logger LOG = Logger.getLogger(AgentHolder.class);
-        LOG.debug("Creating WSO2-WMB Agent");
+        LOG.debug("Creating WSO2 Agent");
         final AgentConfiguration agentConfiguration = new AgentConfiguration();
         String currentDir = System.getProperty("user.dir");
 
@@ -27,7 +27,7 @@ public enum AgentHolder {
         LOG.debug("Agent created");
     }
 
-    public Agent get() {
+    Agent get() {
         return agent;
     }
 
