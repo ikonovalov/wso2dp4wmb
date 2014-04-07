@@ -1,8 +1,9 @@
 package com.lux.wso2;
 
+import com.lux.wso2.stream.Stream;
 import com.lux.wso2.stream.StreamDefinitionBuilder;
 import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
-import com.lux.wso2.stream.WBMEventsStreamDefinitionBuilder;
+import com.lux.wso2.stream.Streams;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -42,26 +43,19 @@ public class WMBEventsAdapter {
         DataPublisher dataPublisher = new DataPublisher(url, username, password, agent);
         LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
 
-        long findStreamTime = System.currentTimeMillis();
+        long findStreamTimeStart = System.currentTimeMillis();
         LOG.info("Finding stream...");
         StreamDefinitionBuilder streamDefinitionBuilder = StreamDefinitionBuilderFactory.createFor("WMBEvent");
-        String streamId = dataPublisher.findStreamId(streamDefinitionBuilder.getStreamName(), streamDefinitionBuilder.getStreamVerision());
 
-        if (streamId == null) {
-            LOG.info("Can't find stream. Define new stream '" + streamDefinitionBuilder.getStreamQualifiedName() + "'");
-            LOG.info("Define new stream\n\n" + streamDefinitionBuilder.define());
-            streamId = dataPublisher.defineStream(streamDefinitionBuilder.define());
-        } else {
-            LOG.info("Stream " + streamId + " already exists");
-        }
+        Stream stream = Streams.defineIfNotExists(dataPublisher, streamDefinitionBuilder);
 
         //Publish event for a valid stream
-        if (!"".equals(streamId)) {
+        if (stream.defined()) {
             long stime = System.currentTimeMillis();
             final int messageCount = 1000;
             long totalTime = System.currentTimeMillis();
             for (int i = 0; i < messageCount; i++) {
-                publishEvents(dataPublisher, streamId);
+                publishEvents(stream);
                 if (i % 1000 == 0) {
                     LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - stime) + "ms");
                     stime = System.currentTimeMillis();
@@ -77,7 +71,7 @@ public class WMBEventsAdapter {
         }
     }
 
-    private static void publishEvents(DataPublisher dataPublisher, String streamId) throws AgentException {
+    private static void publishEvents(Stream stream) throws AgentException {
 
 
         Object[] meta = new Object[]{
@@ -110,9 +104,7 @@ public class WMBEventsAdapter {
                 ""
         };
 
-        Event wmbEvent = new Event(streamId, System.currentTimeMillis(), meta, correlation, payload);
-        dataPublisher.publish(wmbEvent);
-
+        stream.publish(meta, correlation, payload);
 
     }
 
