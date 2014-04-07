@@ -1,6 +1,7 @@
 package com.lux.wso2;
 
 import com.lux.wso2.stream.StreamDefinitionBuilder;
+import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
 import com.lux.wso2.stream.WBMEventsStreamDefinitionBuilder;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
@@ -19,8 +20,6 @@ public class WMBEventsAdapter {
 
     private static final Logger LOG = Logger.getLogger(WMBEventsAdapter.class);
 
-
-
     public static void main(String[] args)
             throws AgentException, MalformedStreamDefinitionException,
             StreamDefinitionException, DifferentStreamDefinitionAlreadyDefinedException,
@@ -33,7 +32,7 @@ public class WMBEventsAdapter {
         Agent agent = AgentHolder.INSTANCE.get();
         String host = "s540";
 
-        String url = getProperty("url", "ssl://" + host + ":" + "7711");
+        String url = getProperty("url", "tcp://" + host + ":" + "7611");
         String username = getProperty("username", "admin");
         String password = getProperty("password", "admin");
 
@@ -42,13 +41,15 @@ public class WMBEventsAdapter {
         LOG.info("Creating DataPublisher...");
         DataPublisher dataPublisher = new DataPublisher(url, username, password, agent);
         LOG.info("DataPublisher created in " + (dpBuildTime = (System.currentTimeMillis() - dpBuildTime)) + "ms");
+
         long findStreamTime = System.currentTimeMillis();
         LOG.info("Finding stream...");
-        StreamDefinitionBuilder streamDefinitionBuilder = new WBMEventsStreamDefinitionBuilder();
+        StreamDefinitionBuilder streamDefinitionBuilder = StreamDefinitionBuilderFactory.createFor("WMBEvent");
         String streamId = dataPublisher.findStreamId(streamDefinitionBuilder.getStreamName(), streamDefinitionBuilder.getStreamVerision());
 
         if (streamId == null) {
-            LOG.info("Can't find stream. Define new stream '" + streamDefinitionBuilder.define() + "'");
+            LOG.info("Can't find stream. Define new stream '" + streamDefinitionBuilder.getStreamQualifiedName() + "'");
+            LOG.info("Define new stream\n\n" + streamDefinitionBuilder.define());
             streamId = dataPublisher.defineStream(streamDefinitionBuilder.define());
         } else {
             LOG.info("Stream " + streamId + " already exists");
@@ -57,13 +58,16 @@ public class WMBEventsAdapter {
         //Publish event for a valid stream
         if (!"".equals(streamId)) {
             long stime = System.currentTimeMillis();
-            for (int i = 0; i < 10000; i++) {
+            final int messageCount = 1000;
+            long totalTime = System.currentTimeMillis();
+            for (int i = 0; i < messageCount; i++) {
                 publishEvents(dataPublisher, streamId);
                 if (i % 1000 == 0) {
                     LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - stime) + "ms");
                     stime = System.currentTimeMillis();
                 }
             }
+            LOG.info("Write " + messageCount + " messages in " + (System.currentTimeMillis() - totalTime) + "ms");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -77,32 +81,37 @@ public class WMBEventsAdapter {
 
 
         Object[] meta = new Object[]{
-                       /* "http://" + host + "/services/" + service,
-                        remoteAddresses[rand.nextInt(10)],
-                        "application/xml",
-                        "http-components/client",
-                        host,
-                        "http://example.org"*/
+                        "9001",
+                        "6.1.0.3",
+                        "MQ Input.transaction.Start",
+                "MQ Input.TransactionStart",
+                "",
+                "",
+                "",
+                System.currentTimeMillis(), //creationTime
+                Integer.valueOf(1),
+                "BRK01",
+                "default",
+                "FirstWSO2WireTap",
+                "MQ Input",
+                "ComIbmMQInputNode",
+                "" // terminal
         };
 
 
         Object[] payload = new Object[]{
-                        /*service,
-                        operation,
-                        timestamps[rand.nextInt(34)], // Unix timeStamp
-                        responseTimes[rand.nextInt(10)],
-                        1,
-                        response,
-                        fault*/
+                       "",
+                       ""
         };
 
-        Object[] correlation = null;
-//                        new Object[] {
-//                        UUID.randomUUID().toString()
-//                };
+        Object[] correlation =  new Object[] {
+                "7619af93-b275-405b-a8d3-ec7f3a558b97-3",
+                "",
+                ""
+        };
 
-        Event statisticsEvent = new Event(streamId, System.currentTimeMillis(), meta, correlation, payload);
-        //dataPublisher.publish(statisticsEvent);
+        Event wmbEvent = new Event(streamId, System.currentTimeMillis(), meta, correlation, payload);
+        dataPublisher.publish(wmbEvent);
 
 
     }

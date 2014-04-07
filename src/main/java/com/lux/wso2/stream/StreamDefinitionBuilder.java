@@ -5,13 +5,13 @@ package com.lux.wso2.stream;
  */
 public class StreamDefinitionBuilder {
 
-    private final String streamName = "DefaultStreamName";
+    private final String streamName = "EmptyStream";
 
-    private final String streamVersion = "";
+    private final String streamVersion = "1.0.0";
 
-    private final String nickName = "";
+    private final String nickName = "EmptyStream";
 
-    private final String description = "WebSphere Message Broker monitoring events";
+    private final String description = "Just empty stream without data fields";
 
     public final String define() {
         return "{" +
@@ -23,7 +23,6 @@ public class StreamDefinitionBuilder {
                 "  'payloadData':       [" + definePayloadData() + "]," +
                 "  'correlationData':   [" + defineCorrelationData() + "]" +
                 "}";
-
     }
 
     protected String getDescription() {
@@ -31,32 +30,15 @@ public class StreamDefinitionBuilder {
     }
 
     protected String defineMetaData() {
-        return  "          {'name':'productVersion','type':'STRING'}," + // eventData.attributes
-                "          {'name':'eventSchemaVersion','type':'STRING'}," +
-                "          {'name':'eventSourceAddress','type':'STRING'}," +
-                "          {'name':'eventName','type':'STRING'}," +         //eventData.eventIdentity
-                "          {'name':'severity','type':'STRING'}," +
-                "          {'name':'priority','type':'STRING'}," +
-                "          {'name':'successDisposition','type':'STRING'}," +
-                "          {'name':'creationTime','type':'LONG'}," +        //eventData.eventSequence
-                "          {'name':'counter','type':'INT'}," +
-                "          {'name':'broker','type':'STRING'}," +              //messageFlowData.broker.name
-                "          {'name':'executionGroup','type':'STRING'}," +      //messageFlowData.executionGroup.name
-                "          {'name':'messageFlow','type':'STRING'}," +         //messageFlowData.messageFlow.name
-                "          {'name':'nodeLabel','type':'STRING'}," +           //messageFlowData.node
-                "          {'name':'nodeType','type':'STRING'}," +
-                "          {'name':'terminal','type':'STRING'}";
+        return  "";
     }
 
     protected String definePayloadData() {
-        return  "          {'name':'bitstream','type':'STRING'}," +
-                "          {'name':'encodingType','type':'STRING'}";
+        return  "";
     }
 
     protected String defineCorrelationData() {
-        return  "          {'name':'localTransactionId','type':'STRING'}," + //eventData.eventCorrelation
-                "          {'name':'parentTransactionId', 'type':'STRING'}," +
-                "          {'name':'globalTransactionId', 'type':'STRING'}";
+        return  "";
     }
 
     public String getStreamName() {
