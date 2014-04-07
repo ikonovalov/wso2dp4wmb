@@ -50,6 +50,7 @@ public class WMBEventsAdapter {
 
             stream.stop();
         }
+        LOG.info("Statistic:\n" + stream.getStatisticMonitor());
     }
 
     private static void publishEvents(Stream stream) throws InfrastructureException {

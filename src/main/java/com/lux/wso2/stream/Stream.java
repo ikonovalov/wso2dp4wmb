@@ -1,6 +1,7 @@
 package com.lux.wso2.stream;
 
 import com.lux.wso2.exceptions.InfrastructureException;
+import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.Event;
@@ -10,20 +11,26 @@ import org.wso2.carbon.databridge.commons.Event;
  */
 public class Stream {
 
-    private final String id;
+    private static final Logger LOG = Logger.getLogger(Stream.class);
 
-    private final String name;
+    private final String id;
 
     private boolean undefined = true;
 
     private DataPublisher dataPublisher;
 
-    protected Stream(final String streamId, final String streamName) {
+    private final StatisticMonitor monitor;
+
+    protected Stream(final String streamId) {
         id = streamId;
-        name = streamName;
         if (!"".equals(streamId)) {
             undefined = false;
         }
+        monitor = new LocalStatisticMonitor();
+    }
+
+    public StatisticMonitor getStatisticMonitor() {
+        return monitor;
     }
 
     public final DataPublisher getDataPublisher() {
@@ -51,14 +58,11 @@ public class Stream {
         return undefined;
     }
 
-    public final String getName() {
-        return name;
-    }
-
     public void publish(final Object[] metadata, final Object[] correlation, final Object[] payload) throws InfrastructureException {
         final Event wmbEvent = new Event(getId(), System.currentTimeMillis(), metadata, correlation, payload);
         try {
             getDataPublisher().publish(wmbEvent);
+            monitor.eventPushed();
         } catch (AgentException e) {
             throw new InfrastructureException(e);
         }

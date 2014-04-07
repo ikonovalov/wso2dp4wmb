@@ -1,5 +1,7 @@
 package com.lux.wso2.stream;
 
+import com.lux.wso2.stream.spec.WBMEventsStreamDefinitionBuilder;
+
 /**
  * Created by Igor on 02.04.2014.
  */

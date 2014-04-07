@@ -1,11 +1,13 @@
-package com.lux.wso2.stream;
+package com.lux.wso2.stream.spec;
+
+import com.lux.wso2.stream.StreamDefinitionBuilder;
 
 /**
  * Created by Igor on 02.04.2014.
  */
 public class WBMEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
 
-    WBMEventsStreamDefinitionBuilder() {
+    public WBMEventsStreamDefinitionBuilder() {
         super();
     }
 

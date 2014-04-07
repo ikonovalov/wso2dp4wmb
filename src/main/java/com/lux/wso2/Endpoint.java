@@ -1,7 +1,5 @@
 package com.lux.wso2;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Created by Igor on 07.04.2014.
  */
