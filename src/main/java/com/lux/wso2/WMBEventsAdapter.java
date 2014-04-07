@@ -1,14 +1,10 @@
 package com.lux.wso2;
 
 import com.lux.wso2.stream.Stream;
-import com.lux.wso2.stream.StreamDefinitionBuilder;
 import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
 import com.lux.wso2.stream.Streams;
 import org.apache.log4j.Logger;
-import org.wso2.carbon.databridge.agent.thrift.Agent;
-import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.carbon.databridge.commons.exception.*;
 
 import java.net.MalformedURLException;
@@ -30,31 +26,25 @@ public class WMBEventsAdapter {
             TransportException, SocketException {
 
 
-        Agent agent = AgentHolder.INSTANCE.get();
         String host = "s540";
-
         String url = getProperty("url", "tcp://" + host + ":" + "7611");
         String username = getProperty("username", "admin");
         String password = getProperty("password", "admin");
 
-        //create data publisher
-
         Endpoint endpoint = new Endpoint(url, username, password);
-        DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
 
-
-        Stream stream = Streams.defineIfNotExists(dataPublisher, StreamDefinitionBuilderFactory.createFor("WMBEvent"));
+        Stream stream = Streams.defineIfNotExists(endpoint, StreamDefinitionBuilderFactory.createFor("WMBEvent"));
 
         //Publish event for a valid stream
         if (stream.defined()) {
-            long stime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             final int messageCount = 1000;
             long totalTime = System.currentTimeMillis();
             for (int i = 0; i < messageCount; i++) {
                 publishEvents(stream);
                 if (i % 1000 == 0) {
-                    LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - stime) + "ms");
-                    stime = System.currentTimeMillis();
+                    LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - startTime) + "ms");
+                    startTime = System.currentTimeMillis();
                 }
             }
             LOG.info("Write " + messageCount + " messages in " + (System.currentTimeMillis() - totalTime) + "ms");
@@ -63,7 +53,7 @@ public class WMBEventsAdapter {
             } catch (InterruptedException e) {
             }
 
-            dataPublisher.stop();
+            stream.stop();
         }
     }
 

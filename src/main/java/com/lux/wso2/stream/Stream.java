@@ -15,7 +15,7 @@ public class Stream {
 
     private boolean undefined = true;
 
-    private DataPublisher publisher;
+    private DataPublisher dataPublisher;
 
     protected Stream(final String streamId, final String streamName) {
         id = streamId;
@@ -25,12 +25,16 @@ public class Stream {
         }
     }
 
-    public final DataPublisher getPublisher() {
-        return publisher;
+    public final DataPublisher getDataPublisher() {
+        return dataPublisher;
     }
 
-    Stream setPublisher(final DataPublisher dataPublisher) {
-        publisher = dataPublisher;
+    public void stop() {
+        Streams.stop(dataPublisher);
+    }
+
+    Stream setDataPublisher(final DataPublisher dataPublisher) {
+        this.dataPublisher = dataPublisher;
         return this;
     }
 
@@ -52,7 +56,7 @@ public class Stream {
 
     public void publish(final Object[] metadata, final Object[] correlation, final Object[] payload) throws AgentException {
         final Event wmbEvent = new Event(getId(), System.currentTimeMillis(), metadata, correlation, payload);
-        getPublisher().publish(wmbEvent);
+        getDataPublisher().publish(wmbEvent);
     }
 
 
