@@ -1,6 +1,10 @@
 package com.lux.wso2.stream;
 
-import com.lux.wso2.DataPublisherHolder;
+import com.lux.wso2.exceptions.CommunicationException;
+import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.exceptions.StreamException;
+import com.lux.wso2.exceptions.WrongCredentialException;
+import com.lux.wso2.infrastructure.DataPublisherHolder;
 import com.lux.wso2.Endpoint;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -16,19 +20,36 @@ public final class Streams {
 
     private static final Logger LOG = Logger.getLogger(Streams.class);
 
-    public static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws AgentException {
-        return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVerision()), definitionBuilder.getStreamQualifiedName()).setDataPublisher(dataPublisher);
+    /**
+     * Find existing stream definition.
+     * @param dataPublisher associated DataPublisher
+     * @param definitionBuilder stread definition metadata holder
+     * @return Stream
+     * @throws AgentException
+     */
+    public static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException {
+        try {
+            return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVerision()), definitionBuilder.getStreamQualifiedName()).setDataPublisher(dataPublisher);
+        } catch (AgentException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
-    public static Stream define(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws StreamDefinitionException, DifferentStreamDefinitionAlreadyDefinedException, MalformedStreamDefinitionException, AgentException {
-        return new Stream(dataPublisher.defineStream(definitionBuilder.define()), definitionBuilder.getStreamQualifiedName()).setDataPublisher(dataPublisher);
+    public static Stream define(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException, StreamException {
+        try {
+            return new Stream(dataPublisher.defineStream(definitionBuilder.define()), definitionBuilder.getStreamQualifiedName()).setDataPublisher(dataPublisher);
+        } catch (AgentException e) {
+            throw new InfrastructureException(e);
+        }  catch (StreamDefinitionException | DifferentStreamDefinitionAlreadyDefinedException | MalformedStreamDefinitionException e) {
+            throw new StreamException(e);
+        }
     }
 
     public static void stop(final DataPublisher dataPublisher) {
         dataPublisher.stop();
     }
 
-    public static Stream defineIfNotExists(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws AgentException, MalformedStreamDefinitionException, StreamDefinitionException, DifferentStreamDefinitionAlreadyDefinedException, TransportException, AuthenticationException, MalformedURLException {
+    public static Stream defineIfNotExists(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException, StreamException {
         final DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
         long findStreamTimeStart = System.currentTimeMillis();
         Stream stream = Streams.find(dataPublisher, definitionBuilder);

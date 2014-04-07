@@ -1,5 +1,9 @@
-package com.lux.wso2;
+package com.lux.wso2.infrastructure;
 
+import com.lux.wso2.Endpoint;
+import com.lux.wso2.exceptions.CommunicationException;
+import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.exceptions.WrongCredentialException;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
@@ -29,7 +33,16 @@ public enum DataPublisherHolder {
 
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    public DataPublisher get(final Endpoint endpoint) throws MalformedURLException, AgentException, AuthenticationException, TransportException {
+    /**
+     * Get DataPublisher from cache. This is thread-safe method.
+     * @param endpoint as a cache's key
+     * @return new DataPublisher or stored DataPublisher
+     * @throws MalformedURLException
+     * @throws AgentException
+     * @throws AuthenticationException
+     * @throws TransportException
+     */
+    public DataPublisher get(final Endpoint endpoint) throws MalformedURLException, WrongCredentialException, InfrastructureException, CommunicationException {
         rwLock.readLock().lock();
         long dpBuildTime = System.currentTimeMillis();
         DataPublisher dp = dpCache.get(endpoint);
@@ -39,7 +52,15 @@ public enum DataPublisherHolder {
             if (dpCache.get(endpoint) == null) {
 
                 LOG.info("Creating new DataPublisher for " + endpoint);
-                dp = new DataPublisher(endpoint.getUrl(), endpoint.getUsername(), endpoint.getPassword(), AgentHolder.INSTANCE.get());
+                try {
+                    dp = new DataPublisher(endpoint.getUrl(), endpoint.getUsername(), endpoint.getPassword(), AgentHolder.INSTANCE.get());
+                } catch (AuthenticationException e) {
+                    throw new WrongCredentialException(e);
+                } catch (AgentException e) {
+                    throw new InfrastructureException(e);
+                } catch (TransportException e) {
+                    throw new CommunicationException(e);
+                }
                 dpCache.put(endpoint, dp);
                 LOG.info("DataPublisher created in " + (System.currentTimeMillis() - dpBuildTime) + "ms");
             }

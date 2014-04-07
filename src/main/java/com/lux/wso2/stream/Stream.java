@@ -1,5 +1,6 @@
 package com.lux.wso2.stream;
 
+import com.lux.wso2.exceptions.InfrastructureException;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
 import org.wso2.carbon.databridge.commons.Event;
@@ -54,9 +55,13 @@ public class Stream {
         return name;
     }
 
-    public void publish(final Object[] metadata, final Object[] correlation, final Object[] payload) throws AgentException {
+    public void publish(final Object[] metadata, final Object[] correlation, final Object[] payload) throws InfrastructureException {
         final Event wmbEvent = new Event(getId(), System.currentTimeMillis(), metadata, correlation, payload);
-        getDataPublisher().publish(wmbEvent);
+        try {
+            getDataPublisher().publish(wmbEvent);
+        } catch (AgentException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
 

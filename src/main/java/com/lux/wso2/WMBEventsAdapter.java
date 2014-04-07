@@ -1,14 +1,15 @@
 package com.lux.wso2;
 
+import com.lux.wso2.exceptions.CommunicationException;
+import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.exceptions.StreamException;
+import com.lux.wso2.exceptions.WrongCredentialException;
 import com.lux.wso2.stream.Stream;
 import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
 import com.lux.wso2.stream.Streams;
 import org.apache.log4j.Logger;
-import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.exception.*;
 
 import java.net.MalformedURLException;
-import java.net.SocketException;
 
 /**
  * Hello world!
@@ -17,13 +18,7 @@ public class WMBEventsAdapter {
 
     private static final Logger LOG = Logger.getLogger(WMBEventsAdapter.class);
 
-    public static void main(String[] args)
-            throws AgentException, MalformedStreamDefinitionException,
-            StreamDefinitionException, DifferentStreamDefinitionAlreadyDefinedException,
-            MalformedURLException,
-            NoStreamDefinitionExistException,
-            AuthenticationException,
-            TransportException, SocketException {
+    public static void main(String[] args) throws MalformedURLException, StreamException, CommunicationException, InfrastructureException, WrongCredentialException {
 
 
         String host = "s540";
@@ -57,7 +52,7 @@ public class WMBEventsAdapter {
         }
     }
 
-    private static void publishEvents(Stream stream) throws AgentException {
+    private static void publishEvents(Stream stream) throws InfrastructureException {
 
 
         Object[] meta = new Object[]{

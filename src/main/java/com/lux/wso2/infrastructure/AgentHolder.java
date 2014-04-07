@@ -1,4 +1,4 @@
-package com.lux.wso2;
+package com.lux.wso2.infrastructure;
 
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.Agent;
@@ -24,7 +24,7 @@ public enum AgentHolder {
         agentConfiguration.setTrustStorePassword(currentDir + "/src/main/resources/client-truststore.jks");
 
         agent = new Agent(agentConfiguration);
-        LOG.debug("Agent created");
+        LOG.debug("Agent created ");
     }
 
     Agent get() {
