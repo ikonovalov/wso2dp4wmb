@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Igor on 07.04.2014.
  */
-public class EndpointHashTest extends EndpointSampleConnectionSettings{
+public class EndpointHashTest implements EndpointSampleConnectionSettings{
 
     @Test
     public void checkEnpointHashAndEquals() {

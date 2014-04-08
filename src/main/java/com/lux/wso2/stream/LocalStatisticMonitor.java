@@ -39,21 +39,21 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
         /**
          * Submit event collecting task
-         * @return
+         * @return current instance (like chain builder)
          */
         PeriodicAverageCounter start() {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     int currentValue = getCounterValue();
-                    long perionInDestinationUtits = timeUnit.convert(period, TimeUnit.MILLISECONDS);
-                    lastAverage = currentValue/perionInDestinationUtits;
+                    long periodInDestinationUtits = timeUnit.convert(period, TimeUnit.MILLISECONDS);
+                    lastAverage = currentValue/periodInDestinationUtits;
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Periodic statistic: " + lastAverage + " in " + perionInDestinationUtits + " events " + timeUnit.name());
+                        LOG.debug("Periodic statistic: Average throughput " + lastAverage + " in " + periodInDestinationUtits + " events " + timeUnit.name().toLowerCase());
                     }
                     reset();
                 }
-            }, 0L, period);
+            }, period, period);
             LOG.info("Periodic monitoring started with AVG task for " + timeUnit.convert(period, TimeUnit.MILLISECONDS) + " " + timeUnit.name().toLowerCase());
             return this;
         }
@@ -74,7 +74,7 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
         /**
          * Get current counter value.
-         * @return
+         * @return current counter value.
          */
         public int getCounterValue() {
             return counter.get();
@@ -82,7 +82,7 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
         /**
          * Get average counter value for <b>period</b>.
-         * @return
+         * @return average counter value.
          */
         public double getAverageForPeriod() {
             return lastAverage;

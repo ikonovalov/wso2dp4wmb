@@ -15,7 +15,7 @@ import static org.junit.Assert.assertSame;
 /**
  * Created by Igor on 07.04.2014.
  */
-public class DataPublisherHolderTest extends EndpointSampleConnectionSettings {
+public class DataPublisherHolderTest implements EndpointSampleConnectionSettings {
 
     @Test // check with same endpoint
     public void checkDataPublisherIsSame() throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException {
