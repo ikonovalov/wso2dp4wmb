@@ -4,6 +4,7 @@ import com.lux.wso2.exceptions.CommunicationException;
 import com.lux.wso2.exceptions.InfrastructureException;
 import com.lux.wso2.exceptions.StreamException;
 import com.lux.wso2.exceptions.WrongCredentialException;
+import com.lux.wso2.stream.Endpoint;
 import com.lux.wso2.stream.Stream;
 import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
 import com.lux.wso2.stream.Streams;

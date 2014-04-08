@@ -1,5 +1,6 @@
 package com.lux.wso2;
 
+import com.lux.wso2.stream.Endpoint;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

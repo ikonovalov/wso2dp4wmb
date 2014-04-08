@@ -1,6 +1,5 @@
 package com.lux.wso2.stream;
 
-import com.lux.wso2.Endpoint;
 import com.lux.wso2.exceptions.CommunicationException;
 import com.lux.wso2.exceptions.InfrastructureException;
 import com.lux.wso2.exceptions.StreamException;

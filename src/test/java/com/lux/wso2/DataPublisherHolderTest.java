@@ -4,6 +4,7 @@ import com.lux.wso2.exceptions.CommunicationException;
 import com.lux.wso2.exceptions.InfrastructureException;
 import com.lux.wso2.exceptions.WrongCredentialException;
 import com.lux.wso2.infrastructure.DataPublisherHolder;
+import com.lux.wso2.stream.Endpoint;
 import org.junit.Test;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 

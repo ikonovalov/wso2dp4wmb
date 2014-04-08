@@ -1,6 +1,6 @@
 package com.lux.wso2.infrastructure;
 
-import com.lux.wso2.Endpoint;
+import com.lux.wso2.stream.Endpoint;
 import com.lux.wso2.exceptions.CommunicationException;
 import com.lux.wso2.exceptions.InfrastructureException;
 import com.lux.wso2.exceptions.WrongCredentialException;
