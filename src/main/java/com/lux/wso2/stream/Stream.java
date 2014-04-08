@@ -1,6 +1,7 @@
 package com.lux.wso2.stream;
 
 import com.lux.wso2.exceptions.InfrastructureException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
@@ -23,7 +24,7 @@ public class Stream {
 
     protected Stream(final String streamId) {
         id = streamId;
-        if (!"".equals(streamId)) {
+        if (StringUtils.isNotEmpty(streamId)) {
             undefined = false;
         }
         monitor = new LocalStatisticMonitor();

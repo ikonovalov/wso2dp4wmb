@@ -33,7 +33,7 @@ public class WMBEventsAdapter {
         //Publish event for a valid stream
         if (stream.defined()) {
             long startTime = System.currentTimeMillis();
-            final int messageCount = 1000;
+            final int messageCount = 2000;
             long totalTime = System.currentTimeMillis();
             for (int i = 0; i < messageCount; i++) {
                 publishEvents(stream);
@@ -41,16 +41,21 @@ public class WMBEventsAdapter {
                     LOG.debug("Write " + (i) + " events in " + (System.currentTimeMillis() - startTime) + "ms");
                     startTime = System.currentTimeMillis();
                 }
+                silentSleep(80);
             }
             LOG.info("Write " + messageCount + " messages in " + (System.currentTimeMillis() - totalTime) + "ms");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-            }
+            silentSleep(3000);
 
             stream.stop();
         }
         LOG.info("Statistic:\n" + stream.getStatisticMonitor());
+    }
+
+    private static void silentSleep(long period) {
+        try {
+            Thread.sleep(period);
+        } catch (InterruptedException e) {
+        }
     }
 
     private static void publishEvents(Stream stream) throws InfrastructureException {
