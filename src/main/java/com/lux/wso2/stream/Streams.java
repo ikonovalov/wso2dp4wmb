@@ -28,12 +28,17 @@ public final class Streams {
      * @return Stream
      * @throws AgentException
      */
-    public static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException {
+    static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException {
         try {
             return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVerision())).setDataPublisher(dataPublisher);
         } catch (AgentException e) {
             throw new InfrastructureException(e);
         }
+    }
+
+    public static Stream find(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException {
+        final DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
+        return find(dataPublisher, definitionBuilder);
     }
 
     /**
@@ -44,7 +49,7 @@ public final class Streams {
      * @throws InfrastructureException
      * @throws StreamException
      */
-    public static Stream define(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException, StreamException {
+    static Stream define(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException, StreamException {
         try {
             return new Stream(dataPublisher.defineStream(definitionBuilder.define())).setDataPublisher(dataPublisher);
         } catch (AgentException e) {
@@ -52,6 +57,11 @@ public final class Streams {
         }  catch (StreamDefinitionException | DifferentStreamDefinitionAlreadyDefinedException | MalformedStreamDefinitionException e) {
             throw new StreamException(e);
         }
+    }
+
+    public static Stream define(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException, StreamException {
+        final DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
+        return define(dataPublisher, definitionBuilder);
     }
 
     /**
@@ -74,13 +84,12 @@ public final class Streams {
      * @throws StreamException
      */
     public static Stream defineIfNotExists(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException, StreamException {
-        final DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
         long findStreamTimeStart = System.currentTimeMillis();
-        Stream stream = Streams.find(dataPublisher, definitionBuilder);
+        Stream stream = Streams.find(endpoint, definitionBuilder);
         if (stream.undefined()) {
             LOG.info("Can't find stream. Define new stream '" + definitionBuilder.getStreamQualifiedName() + "'");
             LOG.debug("Define new stream\n\n" + definitionBuilder.define());
-            stream = Streams.define(dataPublisher, definitionBuilder);
+            stream = Streams.define(endpoint, definitionBuilder);
             LOG.info("New stream defined in " + (System.currentTimeMillis() - findStreamTimeStart) + "ms");
         } else {
             if (LOG.isDebugEnabled()) {
