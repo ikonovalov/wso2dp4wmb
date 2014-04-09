@@ -1,5 +1,6 @@
 package com.lux.wso2.stream;
 
+import com.lux.wso2.exceptions.StreamException;
 import com.lux.wso2.stream.spec.WBMEventsStreamDefinitionBuilder;
 
 /**
@@ -8,13 +9,13 @@ import com.lux.wso2.stream.spec.WBMEventsStreamDefinitionBuilder;
 public class StreamDefinitionBuilderFactory {
 
 
-    public static StreamDefinitionBuilder createFor(final String builderName) {
+    public static StreamDefinitionBuilder createFor(final String builderName) throws StreamException {
         switch (builderName) {
             case "WMBEvent":{
                 return new WBMEventsStreamDefinitionBuilder();
             }
             default: {
-                return new StreamDefinitionBuilder();
+                throw new StreamException("Stream definition builder with name " + builderName + " not registered.");
             }
         }
     }

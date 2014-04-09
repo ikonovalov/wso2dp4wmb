@@ -3,15 +3,7 @@ package com.lux.wso2.stream;
 /**
  * Created by Igor on 02.04.2014.
  */
-public class StreamDefinitionBuilder {
-
-    private final String streamName = "EmptyStream";
-
-    private final String streamVersion = "1.0.0";
-
-    private final String nickName = "EmptyStream";
-
-    private final String description = "Just empty stream without data fields";
+public abstract class StreamDefinitionBuilder {
 
     public final String define() {
         return "{" +
@@ -26,35 +18,25 @@ public class StreamDefinitionBuilder {
     }
 
     protected String getDescription() {
-        return description;
+        return "";
     }
 
-    protected String defineMetaData() {
-        return  "";
-    }
+    protected abstract String defineMetaData();
 
-    protected String definePayloadData() {
-        return  "";
-    }
+    protected abstract String definePayloadData();
 
-    protected String defineCorrelationData() {
-        return  "";
-    }
+    protected abstract String defineCorrelationData();
 
-    public String getStreamName() {
-        return streamName;
-    }
+    public abstract String getStreamName();
 
-    public String getStreamVerision() {
-        return streamVersion;
-    }
+    public abstract String getStreamVerision();
 
     public final String getStreamQualifiedName() {
         return getStreamName() + ":" + getStreamVerision();
     }
 
     public String getNickName() {
-        return nickName;
+        return getStreamName();
     }
 
 }
