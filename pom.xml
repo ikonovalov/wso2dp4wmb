@@ -24,7 +24,7 @@
             </snapshots>
             <releases>
                 <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
+                <updatePolicy>daily</updatePolicy>
                 <checksumPolicy>fail</checksumPolicy>
             </releases>
         </repository>

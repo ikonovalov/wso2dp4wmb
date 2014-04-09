@@ -8,6 +8,8 @@ import com.lux.wso2.stream.Endpoint;
 import com.lux.wso2.stream.Stream;
 import com.lux.wso2.stream.StreamDefinitionBuilderFactory;
 import com.lux.wso2.stream.Streams;
+import com.lux.wso2.utils.EndpointSampleConnectionSettings;
+import com.lux.wso2.utils.RandomDataFlooder;
 import org.junit.Test;
 
 import java.net.MalformedURLException;

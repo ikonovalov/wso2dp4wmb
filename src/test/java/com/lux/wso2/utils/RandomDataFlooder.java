@@ -1,4 +1,4 @@
-package com.lux.wso2;
+package com.lux.wso2.utils;
 
 import java.security.SecureRandom;
 import java.util.Random;

@@ -1,4 +1,4 @@
-package com.lux.wso2;
+package com.lux.wso2.utils;
 
 /**
  * Created by Igor on 07.04.2014.

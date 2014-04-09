@@ -21,7 +21,7 @@ public enum AgentHolder {
 
         // this is the bug CEP-656
         agentConfiguration.setTrustStore("wso2carbon");
-        agentConfiguration.setTrustStorePassword(currentDir + "/src/main/resources/client-truststore.jks");
+        agentConfiguration.setTrustStorePassword(currentDir + "/src/main/resources/client-truststore.jks"); // TODO to be configurable
 
         agent = new Agent(agentConfiguration);
         LOG.debug("Agent created ");

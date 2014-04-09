@@ -1,6 +1,8 @@
-package com.lux.wso2.stream;
+package com.lux.wso2.stream.mon;
 
+import com.lux.wso2.stream.StatisticHandlerService;
 import org.apache.log4j.Logger;
+import org.wso2.carbon.databridge.commons.Event;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class LocalStatisticMonitor implements StatisticMonitor {
 
-    private static class PeriodicAverageCounter {
+    private static class PeriodicAverageCounter<T> {
 
         private final TimeUnit timeUnit;
 
@@ -23,6 +25,13 @@ public class LocalStatisticMonitor implements StatisticMonitor {
         private final Timer timer;
 
         private double lastAverage;
+
+        private StatisticHandlerService<String> statHandler;
+
+        public PeriodicAverageCounter setStatisticHandeler(StatisticHandlerService<String> statHandler) {
+            this.statHandler = statHandler;
+            return this;
+        }
 
         /**
          * Create new periodic statistic counter.
@@ -48,8 +57,8 @@ public class LocalStatisticMonitor implements StatisticMonitor {
                     int currentValue = getCounterValue();
                     long periodInDestinationUtits = timeUnit.convert(period, TimeUnit.MILLISECONDS);
                     lastAverage = currentValue/periodInDestinationUtits;
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Periodic statistic: Average throughput " + lastAverage + " in " + periodInDestinationUtits + " events " + timeUnit.name().toLowerCase());
+                    if (statHandler != null) {
+                        statHandler.publish("Periodic statistic: Average throughput " + lastAverage + " in " + periodInDestinationUtits + " events " + timeUnit.name().toLowerCase());
                     }
                     reset();
                 }
@@ -91,7 +100,9 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
     private static final Logger LOG = Logger.getLogger(LocalStatisticMonitor.class);
 
-    private AtomicLong eventCounter = new AtomicLong(0L);
+    private final AtomicLong eventCounter = new AtomicLong(0L);
+
+    private final AtomicLong eventFailCounter = new AtomicLong(0L);
 
     private final long creationTime;
 
@@ -99,22 +110,38 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
     private final Timer timer;
 
-    private Map<String, PeriodicAverageCounter> monitoringMap = new HashMap<>();
+    private Map<String, PeriodicAverageCounter> counterMonitoringMap = new HashMap<>();
+
+    LocalStatisticMonitor(Properties properties) {
+        super();
+        creationTime = System.currentTimeMillis();
+        timer = new Timer("LOCAL_STAT_MON_TIMER", true);
+    }
 
     LocalStatisticMonitor() {
         super();
         creationTime = System.currentTimeMillis();
         timer = new Timer("LOCAL_STAT_MON_TIMER", true);
-        monitoringMap.put("MINUTES_MON", new PeriodicAverageCounter(timer, TimeUnit.MINUTES, 60000).start());
+        counterMonitoringMap.put("MINUTES_MON", new PeriodicAverageCounter(timer, TimeUnit.MINUTES, 60000).setStatisticHandeler(new StatisticHandlerService<String>() {
+            @Override
+            public void publish(String statistocContainer) {
+                LOG.debug(statistocContainer);
+            }
+        }).start());
     }
 
     @Override
-    public void eventPushed() {
+    public void onEventPushed(final Event event) {
         eventCounter.incrementAndGet();
         lastPublishedEventTime.lazySet(System.currentTimeMillis());
-        for (PeriodicAverageCounter periodicCounterEntry : monitoringMap.values()) {
+        for (PeriodicAverageCounter periodicCounterEntry : counterMonitoringMap.values()) {
             periodicCounterEntry.increment();
         }
+    }
+
+    @Override
+    public void onEventPublishFailure(Event event) {
+        eventFailCounter.incrementAndGet();
     }
 
     @Override
@@ -128,6 +155,7 @@ public class LocalStatisticMonitor implements StatisticMonitor {
                 "eventCounter=" + eventCounter +
                 ", creationTime=" + new Date(creationTime) +
                 ", lastPublishedEventTime=" + new Date(lastPublishedEventTime.get()) +
+                "eventFailureCounter=" + eventFailCounter +
                 '}';
     }
 }

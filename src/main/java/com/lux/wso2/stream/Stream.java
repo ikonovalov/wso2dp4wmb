@@ -1,6 +1,9 @@
 package com.lux.wso2.stream;
 
 import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.stream.mon.LocalStatisticMonitor;
+import com.lux.wso2.stream.mon.StatisticMonitor;
+import com.lux.wso2.stream.mon.StatisticMonitorFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
@@ -27,7 +30,14 @@ public class Stream {
         if (StringUtils.isNotEmpty(streamId)) {
             undefined = false;
         }
-        monitor = new LocalStatisticMonitor();
+        StatisticMonitor _monitor = null;
+        try {
+            _monitor = StatisticMonitorFactory.create(LocalStatisticMonitor.class);
+        } catch (IllegalAccessException | InstantiationException e) {
+            LOG.warn(e.getMessage());
+            LOG.warn(StatisticMonitor.class.getName() + " DISABLED");
+        }
+        monitor = _monitor;
     }
 
     public StatisticMonitor getStatisticMonitor() {
@@ -63,7 +73,9 @@ public class Stream {
         final Event wmbEvent = new Event(getId(), System.currentTimeMillis(), metadata, correlation, payload);
         try {
             getDataPublisher().publish(wmbEvent);
-            monitor.eventPushed();
+            if (monitor != null) {
+                monitor.onEventPushed(wmbEvent);
+            }
         } catch (AgentException e) {
             throw new InfrastructureException(e);
         }

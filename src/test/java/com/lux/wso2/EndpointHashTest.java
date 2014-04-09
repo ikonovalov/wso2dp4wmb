@@ -1,13 +1,14 @@
 package com.lux.wso2;
 
 import com.lux.wso2.stream.Endpoint;
+import com.lux.wso2.utils.EndpointSampleConnectionSettings;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * Created by Igor on 07.04.2014.
  */
-public class EndpointHashTest implements EndpointSampleConnectionSettings{
+public class EndpointHashTest implements EndpointSampleConnectionSettings {
 
     @Test
     public void checkEnpointHashAndEquals() {
