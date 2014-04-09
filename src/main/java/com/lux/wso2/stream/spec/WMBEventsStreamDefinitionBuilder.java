@@ -5,9 +5,9 @@ import com.lux.wso2.stream.StreamDefinitionBuilder;
 /**
  * Created by Igor on 02.04.2014.
  */
-public class WBMEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
+public class WMBEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
 
-    public WBMEventsStreamDefinitionBuilder() {
+    public WMBEventsStreamDefinitionBuilder() {
         super();
     }
 
@@ -23,12 +23,12 @@ public class WBMEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
 
     @Override
     public String getStreamVerision() {
-        return "1.2.0";
+        return "1.2.1";
     }
 
     @Override
     public String getDescription() {
-        return "WebSphere Message Broker monitoring events";
+        return "WebSphere Message Broker monitoring events " + getStreamVerision();
     }
 
     @Override
