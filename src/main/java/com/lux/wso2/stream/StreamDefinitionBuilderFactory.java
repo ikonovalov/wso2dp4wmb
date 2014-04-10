@@ -15,7 +15,7 @@ public class StreamDefinitionBuilderFactory {
                 return new WMBEventsStreamDefinitionBuilder();
             }
             default: {
-                throw new StreamException("Stream definition builder with name " + builderName + " not registered.");
+                throw new StreamException("Stream definition builder with name [" + builderName + "] not registered.");
             }
         }
     }

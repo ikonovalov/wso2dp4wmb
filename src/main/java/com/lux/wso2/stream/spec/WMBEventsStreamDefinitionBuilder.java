@@ -1,19 +1,14 @@
 package com.lux.wso2.stream.spec;
 
-import com.lux.wso2.stream.StreamDefinitionBuilder;
+import com.lux.wso2.stream.AbstractStreamDefinitionBuilder;
 
 /**
  * Created by Igor on 02.04.2014.
  */
-public class WMBEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
+public class WMBEventsStreamDefinitionBuilder extends AbstractStreamDefinitionBuilder {
 
     public WMBEventsStreamDefinitionBuilder() {
         super();
-    }
-
-    @Override
-    public String getNickName() {
-        return "WMBEvents";
     }
 
     @Override
@@ -22,13 +17,19 @@ public class WMBEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
     }
 
     @Override
-    public String getStreamVerision() {
+    public String getStreamVersion() {
         return "1.2.1";
     }
 
     @Override
+    public String getNickName() {
+        return "WMBEvents";
+    }
+
+
+    @Override
     public String getDescription() {
-        return "WebSphere Message Broker monitoring events " + getStreamVerision();
+        return "WebSphere Message Broker monitoring events " + getStreamVersion();
     }
 
     @Override
@@ -62,4 +63,6 @@ public class WMBEventsStreamDefinitionBuilder extends StreamDefinitionBuilder {
                 "          {'name':'parentTransactionId', 'type':'STRING'}," +
                 "          {'name':'globalTransactionId', 'type':'STRING'}";
     }
+
+
 }
