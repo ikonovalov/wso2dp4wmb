@@ -1,9 +1,9 @@
 package com.lux.wso2.infrastructure;
 
-import com.lux.wso2.stream.Endpoint;
 import com.lux.wso2.exceptions.CommunicationException;
 import com.lux.wso2.exceptions.InfrastructureException;
 import com.lux.wso2.exceptions.WrongCredentialException;
+import com.lux.wso2.stream.Endpoint;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.databridge.agent.thrift.DataPublisher;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
@@ -62,7 +62,7 @@ public enum DataPublisherHolder {
                     throw new CommunicationException(e);
                 }
                 dpCache.put(endpoint, dp);
-                LOG.info("DataPublisher created in " + (System.currentTimeMillis() - dpBuildTime) + "ms");
+                LOG.info("DataPublisher for " + endpoint + " created in " + (System.currentTimeMillis() - dpBuildTime) + "ms");
             }
             rwLock.readLock().lock();
             rwLock.writeLock().unlock();

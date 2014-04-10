@@ -30,7 +30,7 @@ public final class Streams {
      */
     static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException {
         try {
-            return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVerision())).setDataPublisher(dataPublisher);
+            return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVersion())).setDataPublisher(dataPublisher);
         } catch (AgentException e) {
             throw new InfrastructureException(e);
         }
@@ -87,7 +87,7 @@ public final class Streams {
         long findStreamTimeStart = System.currentTimeMillis();
         Stream stream = Streams.find(endpoint, definitionBuilder);
         if (stream.undefined()) {
-            LOG.info("Can't find stream. Define new stream '" + definitionBuilder.getStreamQualifiedName() + "'");
+            LOG.info("Can't find stream. Define new stream '" + definitionBuilder.getStreamId() + "'");
             LOG.debug("Define new stream\n\n" + definitionBuilder.define());
             stream = Streams.define(endpoint, definitionBuilder);
             LOG.info("New stream defined in " + (System.currentTimeMillis() - findStreamTimeStart) + "ms");
