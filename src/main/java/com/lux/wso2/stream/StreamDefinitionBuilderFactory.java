@@ -2,6 +2,7 @@ package com.lux.wso2.stream;
 
 import com.lux.wso2.exceptions.StreamException;
 import com.lux.wso2.stream.spec.WMBEventsStreamDefinitionBuilder;
+import org.apache.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,26 +16,31 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class StreamDefinitionBuilderFactory {
 
+    private final static Logger LOG = Logger.getLogger(StreamDefinitionBuilderFactory.class);
+
     private final static Map<String, Class> namedBuilderRegistry = new HashMap<>();
 
     private final static ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     static {
-        rwLock.writeLock().lock();
-        namedBuilderRegistry.put("WMBEvent", WMBEventsStreamDefinitionBuilder.class);
-        rwLock.writeLock().unlock();
+        registerNewFactory("WMBEvent", WMBEventsStreamDefinitionBuilder.class);
     }
 
-    public synchronized static Set<String> getRegistredFactorySet() {
+    public static Set<String> getRegistredFactorySet() {
         rwLock.readLock().lock();
-        Set<String> registredBuilderNames = Collections.unmodifiableSet(namedBuilderRegistry.keySet());
+        final Set<String> registredBuilderNames = Collections.unmodifiableSet(namedBuilderRegistry.keySet());
         rwLock.readLock().unlock();
         return registredBuilderNames;
     }
 
-    public static synchronized void registerNewFactory(String name, Class<StreamDefinitionBuilder> implementation) {
+    public static void registerNewFactory(String name, Class<? extends StreamDefinitionBuilder> implementation) {
         rwLock.writeLock().lock();
-        namedBuilderRegistry.put(name, implementation);
+        if (namedBuilderRegistry.get(name) == null) {
+            namedBuilderRegistry.put(name, implementation);
+            LOG.info(implementation.getName() + " registered with alias '" + name + "'");
+        } else {
+            LOG.debug(implementation.getName() + " already registered with alias '" + name + "'");
+        }
         rwLock.writeLock().unlock();
     }
 
