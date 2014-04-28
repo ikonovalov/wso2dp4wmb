@@ -56,6 +56,7 @@ public class WMBEventsAdapter {
         try {
             Thread.sleep(period);
         } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -71,7 +72,7 @@ public class WMBEventsAdapter {
                 "",
                 "",
                 System.currentTimeMillis(), //creationTime
-                Integer.valueOf(1),
+                1,
                 "BRK01",
                 "default",
                 "FirstWSO2WireTap",
@@ -98,7 +99,7 @@ public class WMBEventsAdapter {
 
     private static String getProperty(String name, String def) {
         String result = System.getProperty(name);
-        if (result == null || result.length() == 0 || result == "") {
+        if (result == null || result.length() == 0 || result.equals("")) {
             result = def;
         }
         return result;

@@ -8,14 +8,14 @@ import java.util.Random;
  */
 public class RandomDataFlooder {
 
-    public Random rnd = new SecureRandom();
+    private Random rnd = new SecureRandom();
 
-    public final String[] eventSourceAddress = {"MQ Input.transaction.Start", "MQ Input.transaction.End", "MQ Output.terminal.in"};
-    public final String[] eventName = {"MQ Input.TransactionStart", "MQ Input.transaction.End", "MQ Output.InTerminal"};
+    private final String[] eventSourceAddress = {"MQ Input.transaction.Start", "MQ Input.transaction.End", "MQ Output.terminal.in"};
+    private final String[] eventName = {"MQ Input.TransactionStart", "MQ Input.transaction.End", "MQ Output.InTerminal"};
 
-    public final String[] flowName = {"FirstWSO2WireTap"};
+    private final String[] flowName = {"FirstWSO2WireTap"};
 
-    public Object[] newDataArrays() {
+    protected Object[] newDataArrays() {
         int eventRndIndex = rnd.nextInt(eventSourceAddress.length);
         int flowNameIndex = rnd.nextInt(flowName.length);
 

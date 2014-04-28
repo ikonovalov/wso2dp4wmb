@@ -25,10 +25,6 @@ public enum DataPublisherHolder {
 
     private static final Logger LOG = Logger.getLogger(DataPublisherHolder.class);
 
-    private final static String keySeparator = "#";
-
-    private final static String EMPTY = "EMPTY";
-
     private Map<Endpoint, DataPublisher> dpCache = new HashMap<>();
 
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
@@ -67,7 +63,7 @@ public enum DataPublisherHolder {
             rwLock.readLock().lock();
             rwLock.writeLock().unlock();
         } else {
-            LOG.debug("DataPublisher is already registred for " + endpoint + ". Timing " + (System.currentTimeMillis() - dpBuildTime) + "ms");
+            LOG.debug("DataPublisher is already registered for " + endpoint + ". Timing " + (System.currentTimeMillis() - dpBuildTime) + "ms");
         }
         rwLock.readLock().unlock();
         return dp;

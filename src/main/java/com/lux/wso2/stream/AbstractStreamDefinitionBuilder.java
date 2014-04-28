@@ -40,7 +40,7 @@ public abstract class AbstractStreamDefinitionBuilder implements StreamDefinitio
      * Use name as default NickName
      * @return
      */
-    public String getNickName() {
+    protected String getNickName() {
         return getStreamName();
     }
 
