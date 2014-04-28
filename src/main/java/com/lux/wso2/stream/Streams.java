@@ -28,7 +28,7 @@ public final class Streams {
      * @return Stream
      * @throws AgentException
      */
-    static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException {
+    static Stream find(final DataPublisher dataPublisher, final StreamDefinitionBuilder definitionBuilder) throws InfrastructureException, StreamException {
         try {
             return new Stream(dataPublisher.findStreamId(definitionBuilder.getStreamName(), definitionBuilder.getStreamVersion())).setDataPublisher(dataPublisher);
         } catch (AgentException e) {
@@ -36,7 +36,7 @@ public final class Streams {
         }
     }
 
-    public static Stream find(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException {
+    public static Stream find(final Endpoint endpoint, final StreamDefinitionBuilder definitionBuilder) throws MalformedURLException, CommunicationException, InfrastructureException, WrongCredentialException, StreamException {
         final DataPublisher dataPublisher = DataPublisherHolder.INSTANCE.get(endpoint);
         return find(dataPublisher, definitionBuilder);
     }

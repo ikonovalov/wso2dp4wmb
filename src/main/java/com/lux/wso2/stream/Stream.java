@@ -1,6 +1,7 @@
 package com.lux.wso2.stream;
 
 import com.lux.wso2.exceptions.InfrastructureException;
+import com.lux.wso2.exceptions.StreamException;
 import com.lux.wso2.stream.mon.LocalStatisticMonitor;
 import com.lux.wso2.stream.mon.StatisticMonitor;
 import com.lux.wso2.stream.mon.StatisticMonitorFactory;
@@ -52,7 +53,10 @@ public class Stream {
         Streams.stop(dataPublisher);
     }
 
-    Stream setDataPublisher(final DataPublisher dataPublisher) {
+    Stream setDataPublisher(final DataPublisher dataPublisher) throws StreamException {
+        if (this.dataPublisher != null) {
+            throw new StreamException("DataPublisher for " + getId() + " already set.");
+        }
         this.dataPublisher = dataPublisher;
         return this;
     }
