@@ -110,7 +110,7 @@ public class LocalStatisticMonitor implements StatisticMonitor {
 
     private final Timer timer;
 
-    private Map<String, PeriodicAverageCounter> counterMonitoringMap = new HashMap<>();
+    private final Map<String, PeriodicAverageCounter> counterMonitoringMap = new HashMap<>();
 
     LocalStatisticMonitor(Properties properties) {
         super();

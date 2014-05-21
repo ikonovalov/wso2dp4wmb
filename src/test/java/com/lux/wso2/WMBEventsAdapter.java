@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 /**
  * Hello world!
  */
-public class WMBEventsAdapter {
+class WMBEventsAdapter {
 
     private static final Logger LOG = Logger.getLogger(WMBEventsAdapter.class);
 

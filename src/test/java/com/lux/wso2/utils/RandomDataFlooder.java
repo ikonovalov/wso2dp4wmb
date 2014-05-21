@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class RandomDataFlooder {
 
-    private Random rnd = new SecureRandom();
+    private final Random rnd = new SecureRandom();
 
     private final String[] eventSourceAddress = {"MQ Input.transaction.Start", "MQ Input.transaction.End", "MQ Output.terminal.in"};
     private final String[] eventName = {"MQ Input.TransactionStart", "MQ Input.transaction.End", "MQ Output.InTerminal"};

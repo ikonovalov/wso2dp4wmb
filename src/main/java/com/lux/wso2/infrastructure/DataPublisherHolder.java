@@ -25,9 +25,9 @@ public enum DataPublisherHolder {
 
     private static final Logger LOG = Logger.getLogger(DataPublisherHolder.class);
 
-    private Map<Endpoint, DataPublisher> dpCache = new HashMap<>();
+    private final Map<Endpoint, DataPublisher> dpCache = new HashMap<>();
 
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     /**
      * Get DataPublisher from cache. This is thread-safe method.

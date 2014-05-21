@@ -47,9 +47,7 @@ public class Endpoint {
 
         if (password != null ? !password.equals(endpoint.password) : endpoint.password != null) return false;
         if (url != null ? !url.equals(endpoint.url) : endpoint.url != null) return false;
-        if (username != null ? !username.equals(endpoint.username) : endpoint.username != null) return false;
-
-        return true;
+        return !(username != null ? !username.equals(endpoint.username) : endpoint.username != null);
     }
 
     @Override

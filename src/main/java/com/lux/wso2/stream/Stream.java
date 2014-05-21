@@ -45,7 +45,7 @@ public class Stream {
         return monitor;
     }
 
-    public final DataPublisher getDataPublisher() {
+    final DataPublisher getDataPublisher() {
         return dataPublisher;
     }
 
