@@ -10,6 +10,6 @@
     </modules>
     <packaging>pom</packaging>
 
-    <name>events-forge</name>
+    <name>WSO2MQ - Bridge</name>
 
 </project>
