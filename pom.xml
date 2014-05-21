@@ -7,9 +7,15 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>agent</module>
+        <module>wmq-facade</module>
     </modules>
     <packaging>pom</packaging>
 
-    <name>WSO2MQ - Bridge</name>
+    <name>WSO2MQ - Event Bridge</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.ver>4.10</junit.ver>
+    </properties>
 
 </project>
