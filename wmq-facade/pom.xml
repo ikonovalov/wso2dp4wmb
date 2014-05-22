@@ -11,6 +11,8 @@
 
     <artifactId>com.lux.wso2.wmqfacade</artifactId>
 
+    <name>WMQ service facades</name>
+
     <dependencies>
         <!-- WMQ -->
         <dependency>

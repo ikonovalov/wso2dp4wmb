@@ -14,18 +14,14 @@ public class ConnectToMQTest {
 
     @Test
     public void connect() throws MQException {
+
         MQQueueManager qMgr = null;
         try {
-            final Properties properties = new Properties();
-
-            properties.put(HOST_NAME_PROPERTY, "s540");
-            properties.put(PORT_PROPERTY, 1414);
-            properties.put(CHANNEL_PROPERTY, "SVRCON_WSO2");
-            properties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
-            properties.put(USER_ID_PROPERTY, "Igor@localhost");
+            final Properties spec = new Properties();
+            spec.put(USER_ID_PROPERTY, "Igor@localhost");
 
 
-            qMgr = new MQQueueManager("QM01", properties);
+            qMgr = ConnectionUtils.remote("QM01", "SVRCON_WSO2", "localhost", 1414, spec);
             System.out.println("CCSID = " + qMgr.getCharacterSet());
 
             MQQueue queue = qMgr.accessQueue("Q1", MQOO_INQUIRE + MQOO_INPUT_SHARED);
@@ -41,8 +37,7 @@ public class ConnectToMQTest {
         } catch (MQException e) {
             e.printStackTrace();
         } finally {
-            if (qMgr != null)
-                qMgr.close();
+            ConnectionUtils.disconnect(qMgr);
         }
     }
 
