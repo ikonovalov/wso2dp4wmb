@@ -2,6 +2,7 @@ package com.lux.wso2.wmq;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
+import com.ibm.mq.pcf.PCFAgent;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -73,6 +74,18 @@ public class ConnectionUtils {
         return makeQMGR(qmgrName, spec);
     }
 
+    public static PCFAgent agent(final String queueManagerName) throws MQException {
+        return new PCFAgent(queueManagerName);
+    }
+
+    public static PCFAgent agent(final String channelName, final String host, final int port) throws MQException {
+        return new PCFAgent(host, port, channelName);
+    }
+
+    public static PCFAgent agent(final MQQueueManager queueManager) throws MQException {
+        return new PCFAgent(queueManager);
+    }
+
     /**
      * Disconnect from queue manager.
      * @param manager
@@ -81,6 +94,16 @@ public class ConnectionUtils {
         try {
             if (manager != null && manager.isConnected()) {
                 manager.disconnect();
+            }
+        } catch (MQException mqe) {
+            LOG.severe(mqe.getMessage());
+        }
+    }
+
+    public static void disconnect(final PCFAgent agent) {
+        try {
+            if (agent != null) {
+                agent.disconnect();
             }
         } catch (MQException mqe) {
             LOG.severe(mqe.getMessage());
