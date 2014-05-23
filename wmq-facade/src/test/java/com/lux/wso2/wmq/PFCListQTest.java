@@ -16,15 +16,11 @@ import static com.lux.wso2.wmq.ConnectionUtils.*;
 /**
  * Created by Igor on 22.05.2014.
  */
-public class PFCListQTest {
+public class PFCListQTest extends CommonMQConnection{
 
     @Test
     public void show() throws MQException, IOException {
-
-        final Properties spec = new Properties();
-        spec.put(USER_ID_PROPERTY, "Igor@localhost");
-
-        PCFAgent agent = agent(remote("QM01", "SVRCON_WSO2", "localhost", 1414, spec));
+        PCFAgent agent = getAgent();
         PCFParameter[] parameters =
                 {
                         new MQCFST(MQCA_Q_NAME, "Q*"),
@@ -48,9 +44,10 @@ public class PFCListQTest {
             System.out.println("\n\n\n");
             // Check the PCF header (MQCFH) in the first response message
             if (cfh.reason == 0 && cfh.type == MQCFT_RESPONSE) {
-                System.out.println("Queue names:");
                 cfsl = new MQCFSL(responses[0]);
                 System.out.println(cfsl);
+                System.out.println("Queue names:");
+
                 for (int i = 0; i < cfsl.strings.length; i++) {
                     System.out.println("\t" + cfsl.strings[i]);
                 }

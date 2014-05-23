@@ -4,23 +4,24 @@ import com.ibm.mq.pcf.MQCFIN;
 import com.ibm.mq.pcf.MQCFST;
 import com.ibm.mq.pcf.PCFParameter;
 
-import static com.ibm.mq.constants.CMQC.MQCA_Q_NAME;
-import static com.ibm.mq.constants.CMQC.MQIA_Q_TYPE;
-import static com.ibm.mq.constants.CMQC.MQQT_ALL;
-import static com.ibm.mq.constants.CMQCFC.MQCMD_INQUIRE_Q_NAMES;
+import static com.ibm.mq.constants.CMQC.*;
 
 /**
  * Created by Igor on 22.05.2014.
  */
-public class PCFQueryLocalQueues extends PCFCommand {
+public class PCFQueryLocalQueues extends PCFQueryQueue {
 
-    private final PCFParameter[] parameters = {new MQCFST(MQCA_Q_NAME, "*"), new MQCFIN(MQIA_Q_TYPE, MQQT_ALL)};
+    private final PCFParameter[] defaultParameters = {new MQCFST(MQCA_Q_NAME, "*"), new MQCFIN(MQIA_Q_TYPE, MQQT_LOCAL)};
 
-    /**
-     * Select all local queues.
-     */
     public PCFQueryLocalQueues() {
-        super(MQCMD_INQUIRE_Q_NAMES, new PCFParameter[] {new MQCFST(MQCA_Q_NAME, "*"), new MQCFIN(MQIA_Q_TYPE, MQQT_ALL)});
+        super();
+        setParameters(defaultParameters);
+    }
+
+    public PCFQueryLocalQueues(final String filter) {
+        super();
+        defaultParameters[0] = new MQCFST(MQCA_Q_NAME, filter);
+        setParameters(defaultParameters);
     }
 
 }

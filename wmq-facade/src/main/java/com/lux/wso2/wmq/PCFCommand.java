@@ -1,26 +1,21 @@
 package com.lux.wso2.wmq;
 
+import com.ibm.mq.MQException;
+import com.ibm.mq.pcf.PCFAgent;
 import com.ibm.mq.pcf.PCFParameter;
 
+import java.io.IOException;
+
 /**
- * Created by Igor on 22.05.2014.
+ * Created by Igor on 23.05.2014.
  */
-public abstract class PCFCommand {
+public interface PCFCommand<R> {
 
-    private int command = -1;
+    R execute(final PCFAgent agent) throws MQException, IOException;
 
-    private PCFParameter[] parameters = null;
+    PCFParameter[] getParameters();
 
-    protected PCFCommand(int command, final PCFParameter[] parameters) {
-        this.command = command;
-        this.parameters = parameters;
-    }
+    int getCommand();
 
-    protected void setCommand(int command) {
-        this.command = command;
-    }
 
-    protected void setParameters(PCFParameter[] parameters) {
-        this.parameters = parameters;
-    }
 }
