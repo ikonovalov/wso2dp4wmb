@@ -2,6 +2,8 @@ package com.lux.wso2.wmq;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.pcf.PCFAgent;
+import com.lux.wso2.wmq.command.PCFQueryLocalQueues;
+import com.lux.wso2.wmq.command.PCFQueryQueue;
 import org.junit.Test;
 
 import java.io.IOException;

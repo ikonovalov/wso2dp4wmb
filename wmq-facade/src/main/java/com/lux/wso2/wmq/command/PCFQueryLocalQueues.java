@@ -1,4 +1,4 @@
-package com.lux.wso2.wmq;
+package com.lux.wso2.wmq.command;
 
 import com.ibm.mq.pcf.MQCFIN;
 import com.ibm.mq.pcf.MQCFST;
