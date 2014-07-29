@@ -18,4 +18,17 @@
         <junit.ver>4.10</junit.ver>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>codeunited-releases</id>
+            <name>CodeUnited releases repo</name>
+            <url>http://codeunited.co/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>codeunited-snapshots</id>
+            <name>CodeUnited snapshots repo</name>
+            <url>http://codeunited.co/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
